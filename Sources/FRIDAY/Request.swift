@@ -111,6 +111,10 @@ open class Request {
         self.formDataBuilder = formDataBuilder
         self.headers = headers
         self.encoding = encoding
+        
+        if #available(iOS 13.0, *) {
+            _cancellableSet = Set<AnyCancellable>()
+        }
     }
     
     @discardableResult
@@ -225,7 +229,7 @@ extension Request {
                     )
                     promise(response.result)
                 })
-                .store(in: &self.cancellableSet)
+                .store(in: &self.cancellableSet!)
             }
         }.eraseToAnyPublisher()
     }
