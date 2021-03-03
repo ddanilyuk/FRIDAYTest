@@ -8,7 +8,10 @@
 
 import Foundation
 import Alamofire
+
+#if canImport(Combine)
 import Combine
+#endif
 
 open class Client: RequestInterceptor {
     
@@ -54,9 +57,11 @@ open class Client: RequestInterceptor {
             if let alamofireRequest = alamofireRequest {
                 request.internalRequest = alamofireRequest
                 
-                // If using Combine
-                let responsePublisher = alamofireRequest.publishResponse(using: DataResponseSerializer())
-                request.internalResponsePublisher = responsePublisher
+                if #available(iOS 13, *) {
+                    // If using Combine
+                    let responsePublisher = alamofireRequest.publishResponse(using: DataResponseSerializer())
+                    request.internalResponsePublisher = responsePublisher
+                }
                 
                 // If using standart way
                 alamofireRequest.responseData { response in

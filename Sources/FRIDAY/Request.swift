@@ -8,7 +8,10 @@
 
 import Foundation
 import Alamofire
+
+#if canImport(Combine)
 import Combine
+#endif
 
 public typealias Parameters = [String: Any]
 
@@ -63,8 +66,32 @@ open class Request {
         }
     }
     
-    var internalResponsePublisher: DataResponsePublisher<Data>?
-    var cancellableSet: Set<AnyCancellable> = []
+    private var _internalResponsePublisher: Any? = nil
+    @available(iOS 13.0, *)
+    var internalResponsePublisher: DataResponsePublisher<Data>? {
+        get {
+            return _internalResponsePublisher as? DataResponsePublisher<Data>
+        } set {
+            _internalResponsePublisher = newValue
+        }
+    }
+    
+    private var _cancellableSet: Any? = nil
+    @available(iOS 13.0, *)
+    var cancellableSet: Set<AnyCancellable>? {
+        get {
+            return _cancellableSet as? Set<AnyCancellable>
+        } set {
+            _cancellableSet = newValue
+        }
+    }
+    
+    
+//    @available(iOS 13, *)
+//    var internalResponsePublisher: DataResponsePublisher<Data>?
+//
+//    @available(iOS 13, *)
+//    var cancellableSet: Set<AnyCancellable> = []
     
     init(
         url: URLConvertible,
@@ -166,6 +193,7 @@ extension Request {
         return self
     }
     
+    @available(iOS 13, *)
     @discardableResult
     public func responsePublisher<Parser: ResponseParsing> (
         completeOn queue: DispatchQueue = .main,

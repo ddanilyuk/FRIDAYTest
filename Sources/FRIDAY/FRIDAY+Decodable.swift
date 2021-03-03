@@ -7,7 +7,10 @@
 //
 
 import Foundation
+
+#if canImport(Combine)
 import Combine
+#endif
 
 public class JSONResponseParser<ParsedValue: Decodable, ErrorType: ResponseError>: ResponseParsing {
     
@@ -69,6 +72,7 @@ extension Request {
         return response(completeOn: queue, using: parser, completion: completion)
     }
     
+    @available(iOS 13.0, *)
     @discardableResult
     public func responseJSONPublisher<Parsable: Decodable,
                                       ErrorType: ResponseError>(with decoder: JSONDecoder = JSONDecoder(),
